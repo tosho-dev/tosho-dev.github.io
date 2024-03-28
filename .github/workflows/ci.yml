@@ -17,11 +17,9 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
-      - name: Copy assets
-        run: cp -r assets dist/
-      - name: CNAME file
+      - name: Copy assets contents
         run: |
-          echo 'tosho.dev' > dist/CNAME
+          cp -r assets/* dist/
       - name: Fix permissions
         run: |
           chmod -c -R +rX "dist/" | while read line; do
