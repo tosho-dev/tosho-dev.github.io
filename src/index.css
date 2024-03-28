@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-black text-white;
+}
+
+.simple-button {
+  @apply border-2 border-orange-400 px-3 py-2 font-semibold bg-black bg-opacity-50 hover:border-white hover:text-gray-200;
+  /* glow button on hover */
+  @apply transition-all duration-500 ease-in-out hover:shadow-lg shadow-orange-500;
+}
