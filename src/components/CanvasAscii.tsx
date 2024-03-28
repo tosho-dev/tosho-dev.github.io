@@ -2,20 +2,30 @@ import React from 'react';
 
 class CanvasAscii extends React.Component<{}> {
     canvasRef?: React.RefObject<HTMLCanvasElement>;
+    intervalTimeout?: NodeJS.Timeout;
 
     constructor(props: {}) {
         super(props);
 
         this.canvasRef = React.createRef();
+        this.intervalTimeout = undefined;
+        this.attachCanvas = this.attachCanvas.bind(this);
     }
-
-    componentDidMount(): void {
+    
+    attachCanvas(): void {
         if (this.canvasRef && this.canvasRef.current) {
             const canvas = this.canvasRef.current;
             const context = canvas.getContext('2d');
 
             if (!context) {
                 return;
+            }
+
+            if (this.intervalTimeout) {
+                // clear interval if it exists
+                clearInterval(this.intervalTimeout);
+                // flush canvas
+                context.clearRect(0, 0, canvas.width, canvas.height);
             }
     
             canvas.width = window.innerWidth;
@@ -47,8 +57,21 @@ class CanvasAscii extends React.Component<{}> {
                 }
             };
     
-            setInterval(draw, 33);
+            this.intervalTimeout = setInterval(draw, 33);
         }
+    }
+
+    componentDidMount(): void {
+        this.attachCanvas();
+        // on resize, reattach canvas
+        window.addEventListener("resize", this.attachCanvas);
+    }
+
+    componentWillUnmount(): void {
+        if (this.intervalTimeout) {
+            clearInterval(this.intervalTimeout);
+        }
+        window.removeEventListener("resize", this.attachCanvas);
     }
 
     render(): React.ReactNode {
